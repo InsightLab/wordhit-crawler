@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*- 
+
 import pymongo
 from scrapy.conf import settings
 from scrapy.exceptions import DropItem
@@ -16,10 +19,11 @@ class MongoPipeline(object):
 	def process_item(self, item, spider):
 		
 		if item['hits']:
-			self.collection.update_one({'word': item['word']}, {'$set': {'hits': item['hits']}})
+			self.collection.update_one({'word': item['word']}, {'$set': {'hits': item['hits']}}, upsert=True)
 			return item
 		else:
-			raise DropItem("Missing hits field in %s" % item)
+			print("Ërror on inserting item")
+			#raise DropItem("Missing hits field in %s" % item)
 
 
 
@@ -32,7 +36,7 @@ class MongoPipelineWords(object):
 		)
 
 		db = connection[settings['MONGODB_DB']]
-		self.collection = db[settings['MONGODB_COLLECTION_TEST']]
+		self.collection = db[settings['MONGODB_COLLECTION']]
 
 	def process_item(self, item, spider):
 		
@@ -40,4 +44,5 @@ class MongoPipelineWords(object):
 			self.collection.insert({'word': item['word'], 'hits': item['hits']})
 			return item
 		else:
-			raise DropItem("Missing hits field in %s" % item)
+			print("Ërror on inserting item")
+			#raise DropItem("Missing hits field in %s" % item)
