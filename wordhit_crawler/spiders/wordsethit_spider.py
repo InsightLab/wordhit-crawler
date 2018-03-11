@@ -7,7 +7,7 @@ class WordHitSpider(scrapy.Spider):
 	allowed_domains = ["www.google.com"]
 	
 	custom_settings = {
-        'DOWNLOAD_DELAY': 1,
+        'DOWNLOAD_DELAY': 0.5,
         'CONCURRENT_REQUESTS': 2
     }
 
