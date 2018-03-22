@@ -4,15 +4,16 @@ from wordhit_crawler.items import WordhitItem
 
 class WordHitSpider(scrapy.Spider):
 	name = 'wordhitSpider'
-	allowed_domains = ["www.google.com"]
+	#allowed_domains = ["www.google.com"]
 	
 	custom_settings = {
-        'DOWNLOAD_DELAY': 0.5,
-        'CONCURRENT_REQUESTS': 2
+        'DOWNLOAD_DELAY': 0.3,
+        'CONCURRENT_REQUESTS': 5
     }
 
 	def start_requests(self):
-		base_url = "https://www.google.com/search?q=%s"	
+		base_url = "https://www.google.com/search?q=%s"
+		#base_url = "https://www.bing.com/search?q=%s"
 		
 		with open('words.txt', 'rb') as f:
 			lines = [line.strip() for line in f.read().decode('utf8').splitlines() if line.strip()]
@@ -28,15 +29,19 @@ class WordHitSpider(scrapy.Spider):
 
 				words = word1 + '+' + word2
 				completeUrl = base_url % (words)
-				completeUrl = completeUrl.encode('utf-8')
+				#completeUrl = completeUrl.encode('utf-8')
 
 
 				yield scrapy.Request(url=completeUrl, callback=self.parse, meta={'words': words})
 			
 	def parse(self, response):
 
+		# Google
 		results = Selector(response).xpath('//*[@id="resultStats"]/text()').extract()
-
+		
+		# Bing
+		#results = Selector(response).xpath('//*[@class="sb_count"]/text()').extract()
+		
 		if(len(results) == 0):
 			with open("words_missing.txt", "a") as myfile:
 				myfile.write("%s\n" % response.meta['words'])
