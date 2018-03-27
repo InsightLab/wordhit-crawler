@@ -28,7 +28,7 @@ ITEM_PIPELINES = {
 }
 
 # Mongo configs
-MONGODB_SERVER = '172.17.0.2'
+MONGODB_SERVER = 'localhost'
 MONGODB_PORT = 27017
 MONGODB_DB = 'opiniorizer'
 MONGODB_COLLECTION = 'words_pair'
